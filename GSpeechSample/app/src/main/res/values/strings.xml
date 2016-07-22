@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GSpeechSample</string>
+    <string name="start_recording">Start Recording</string>
+    <string name="stop_recording">Stop Recording</string>
+</resources>

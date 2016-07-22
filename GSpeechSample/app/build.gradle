@@ -1,0 +1,66 @@
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.protobuf'
+
+protobuf {
+    // Configure the protoc executable
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.0.0-beta-3'
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:0.15.0'
+        }
+    }
+    generateProtoTasks {
+        all().each {
+            task ->
+                task.builtins {
+                    // Javanano is installed by default, but needs to be removed to use java
+                    remove javanano
+                    java {
+                        // Options added to --java_out
+                    }
+                }
+
+                task.plugins {
+                    grpc {
+                        // Options added to --grpc_out
+                    }
+                }
+        }
+    }
+}
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.0"
+
+    defaultConfig {
+        applicationId "me.yurifariasg.speech_sample"
+        minSdkVersion 16
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+def grpcVersion = '0.15.0'
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'javax.annotation:javax.annotation-api:1.2'
+    compile "io.grpc:grpc-okhttp:${grpcVersion}"
+    compile "io.grpc:grpc-protobuf:${grpcVersion}"
+    compile "io.grpc:grpc-stub:${grpcVersion}"
+    compile "io.grpc:grpc-auth:${grpcVersion}"
+    compile 'com.google.auth:google-auth-library-oauth2-http:0.3.0'
+}
