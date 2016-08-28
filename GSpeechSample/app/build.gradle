@@ -36,12 +36,18 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
 
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "2048M"
+    }
+
     defaultConfig {
         applicationId "me.yurifariasg.speech_sample"
-        minSdkVersion 16
+        minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -56,6 +62,7 @@ def grpcVersion = '0.15.0'
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    compile 'com.google.android.gms:play-services:9.4.0'
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'javax.annotation:javax.annotation-api:1.2'
     compile "io.grpc:grpc-okhttp:${grpcVersion}"
@@ -63,4 +70,5 @@ dependencies {
     compile "io.grpc:grpc-stub:${grpcVersion}"
     compile "io.grpc:grpc-auth:${grpcVersion}"
     compile 'com.google.auth:google-auth-library-oauth2-http:0.3.0'
+    compile 'com.android.support:multidex:1.0.1'
 }

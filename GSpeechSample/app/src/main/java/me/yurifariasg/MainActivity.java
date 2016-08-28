@@ -9,6 +9,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.security.ProviderInstaller;
+
 import java.io.InputStream;
 
 import io.grpc.ManagedChannel;
@@ -97,6 +102,26 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+                // Required to support Android 4.x.x (patches for OpenSSL from Google-Play-Services)
+                try {
+                    ProviderInstaller.installIfNeeded(getApplicationContext());
+                } catch (GooglePlayServicesRepairableException e) {
+
+                    // Indicates that Google Play services is out of date, disabled, etc.
+                    e.printStackTrace();
+                    // Prompt the user to install/update/enable Google Play services.
+                    GooglePlayServicesUtil.showErrorNotification(
+                            e.getConnectionStatusCode(), getApplicationContext());
+                    return;
+
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    // Indicates a non-recoverable error; the ProviderInstaller is not able
+                    // to install an up-to-date Provider.
+                    e.printStackTrace();
+                    return;
+                }
+
                 try {
                     InputStream credentials = getAssets().open("credentials.json");
                     ManagedChannel channel = StreamingRecognizeClient.createChannel(
